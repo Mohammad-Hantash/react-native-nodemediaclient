@@ -24,6 +24,6 @@
 -(int)start;
 -(int)stop;
 -(int)switchCamera;
-
+-(void)captureCurrentFrame:(RCTBridge * ) bridge withQuality:(float)quality;
 
 @end
