@@ -72,6 +72,15 @@ class NodeCameraView extends Component {
     );
   }
 
+
+  captureCurrentFrame(quality) {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(this.refs[RCT_VIDEO_REF]),
+      UIManager.RCTNodeCamera.Commands.captureCurrentFrame,
+      [quality]
+    );
+  }
+
   render() {
     return <RCTNodeCamera
       {...this.props}
@@ -100,7 +109,7 @@ NodeCameraView.propTypes = {
     fps: PropTypes.oneOf([15, 20, 24, 30]),
     videoFrontMirror: PropTypes.bool
   }),
-  autopreview:PropTypes.bool,
+  autopreview: PropTypes.bool,
   denoise: PropTypes.bool,
   smoothSkinLevel: PropTypes.oneOf([0, 1, 2, 3, 4, 5]),
   onStatus: PropTypes.func,
