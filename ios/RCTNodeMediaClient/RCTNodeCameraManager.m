@@ -71,6 +71,7 @@ RCT_EXPORT_METHOD(stop:(nonnull NSNumber *)reactTag)
    }];
 }
 
+
 RCT_EXPORT_METHOD(switchCamera:(nonnull NSNumber *)reactTag)
 {
   
@@ -90,5 +91,17 @@ RCT_EXPORT_METHOD(flashEnable:(nonnull NSNumber *)reactTag enable:(BOOL)enable)
      [view setFlashEnable:enable];
    }];
 }
+
+
+RCT_EXPORT_METHOD(captureCurrentFrame:(nonnull NSNumber *)reactTag quality:(int)quality)
+{
+    
+    [self.bridge.uiManager addUIBlock:
+     ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTNodeCameraView *> *viewRegistry){
+         RCTNodeCameraView *view = viewRegistry[reactTag];
+         [view captureCurrentFrame:self.bridge withQuality:quality];
+     }];
+}
+
 
 @end
