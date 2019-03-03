@@ -87,18 +87,14 @@
   [_np setFlashEnable:flashEnable];
 }
 
-
-- (void)captureCurrentFrame:(RCTBridge * ) bridge widthQuality:(float) quality {
+- (void)captureCurrentFrame:(RCTBridge *)bridge withQuality:(float)quality{
     [
      _np capturePicture:^(UIImage * _Nullable image) {
-        NSString * base64 = [UIImageJPEGRepresentation(image,quality) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-        [bridge.eventDispatcher sendDeviceEventWithName:@"currentFrameUpdate" body:@{@"base64": base64}];
-    }
+         NSString * base64 = [UIImageJPEGRepresentation(image,quality) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+         [bridge.eventDispatcher sendDeviceEventWithName:@"currentFrameUpdate" body:@{@"base64": base64}];
+     }
      ];
 }
-
-
-
 -(int)startprev {
   return [_np startPreview];
 }
