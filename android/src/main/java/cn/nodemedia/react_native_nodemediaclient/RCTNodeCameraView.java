@@ -39,7 +39,7 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
     private int audioBitrate = 32000;
     private int audioProfile = 0;
     private int audioSamplerate = 44100;
-    private static String CURRENT_FRAME_EVENT_NAME = "CURRENT_FRAME_EVENT_NAME";
+    private static String CURRENT_FRAME_EVENT_NAME = "currentFrameUpdate";
 
     private int videoPreset = NodePublisher.VIDEO_PPRESET_4X3_480;
     private int videoFPS = 20;
@@ -130,7 +130,7 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
                 bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream .toByteArray();
                 String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                WritableMap params = Arguments.createMap(); // add here the data you want to send
+                WritableMap params = Arguments.createMap();  
                 params.putString("base64",encoded);
                 ((ReactContext) getContext())
                         .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
