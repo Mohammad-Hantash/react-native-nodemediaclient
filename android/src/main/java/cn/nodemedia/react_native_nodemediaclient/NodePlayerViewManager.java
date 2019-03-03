@@ -72,6 +72,7 @@ public class NodePlayerViewManager extends SimpleViewManager<RCTNodePlayerView> 
         }
     }
 
+
     @Nullable
     @Override
     public Map<String, Integer> getCommandsMap() {

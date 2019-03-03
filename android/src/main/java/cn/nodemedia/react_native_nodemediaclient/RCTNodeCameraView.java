@@ -8,14 +8,22 @@
 package cn.nodemedia.react_native_nodemediaclient;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.util.Base64;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+
+import java.io.ByteArrayOutputStream;
 
 import cn.nodemedia.NodeCameraView;
 import cn.nodemedia.NodePublisher;
@@ -31,6 +39,7 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
     private int audioBitrate = 32000;
     private int audioProfile = 0;
     private int audioSamplerate = 44100;
+    private static String CURRENT_FRAME_EVENT_NAME = "CURRENT_FRAME_EVENT_NAME";
 
     private int videoPreset = NodePublisher.VIDEO_PPRESET_4X3_480;
     private int videoFPS = 20;
@@ -112,6 +121,26 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
         return mNodePublisher.switchCamera();
     }
 
+    public void captureCurrentViewAsBase64(final int quality){
+
+        mNodePublisher.capturePicture(new NodePublisher.CapturePictureListener() {
+            @Override
+            public void onCaptureCallback(Bitmap bitmap) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream .toByteArray();
+                String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                WritableMap params = Arguments.createMap(); // add here the data you want to send
+                params.putString("base64",encoded);
+                ((ReactContext) getContext())
+                        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                        .emit(CURRENT_FRAME_EVENT_NAME,params);
+            }
+        });
+
+
+
+    }
     public void audioPreview() {
         isAutoPreview = true;
         if(cameraId >=0) {

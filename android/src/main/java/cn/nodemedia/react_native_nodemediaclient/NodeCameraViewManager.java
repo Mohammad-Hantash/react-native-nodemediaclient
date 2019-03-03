@@ -7,9 +7,12 @@
 
 package cn.nodemedia.react_native_nodemediaclient;
 
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -31,9 +34,11 @@ public class NodeCameraViewManager extends SimpleViewManager<RCTNodeCameraView> 
     private static final String COMMAND_START_NAME = "start";
     private static final int COMMAND_STOP_ID = 3;
     private static final String COMMAND_STOP_NAME = "stop";
+    private static final String COMMAND_CAPTURE_IMAGE_NAME = "captureCurrentFrame";
     private static final int COMMAND_SWITCH_CAM_ID = 4;
     private static final String COMMAND_SWITCH_CAM_NAME = "switchCamera";
     private static final int COMMAND_SWITCH_FLASH_ID = 5;
+    private static final int COMMAND_CAPTURE_IMAGE_ID = 6;
     private static final String COMMAND_SWITCH_FLASH_NAME = "flashEnable";
     @Override
     public String getName() {
@@ -92,9 +97,18 @@ public class NodeCameraViewManager extends SimpleViewManager<RCTNodeCameraView> 
                 COMMAND_START_NAME,COMMAND_START_ID,
                 COMMAND_STOP_NAME,COMMAND_STOP_ID,
                 COMMAND_SWITCH_CAM_NAME,COMMAND_SWITCH_CAM_ID,
-                COMMAND_SWITCH_FLASH_NAME,COMMAND_SWITCH_FLASH_ID
+                COMMAND_SWITCH_FLASH_NAME,COMMAND_SWITCH_FLASH_ID,
+                COMMAND_CAPTURE_IMAGE_NAME,COMMAND_CAPTURE_IMAGE_ID
         );
     }
+//
+//    @ReactMethod
+//    public void getCurrentFrame(final Promise promise) {
+//        if (RCTCamera.getInstance() != null) {
+//
+//            promise.resolve(RCTCamera.getInstance().getCurrentColor());
+//        }
+//    }
 
     @Override
     public void receiveCommand(RCTNodeCameraView root, int commandId, @Nullable ReadableArray args) {
@@ -116,6 +130,8 @@ public class NodeCameraViewManager extends SimpleViewManager<RCTNodeCameraView> 
                 break;
             case COMMAND_SWITCH_FLASH_ID:
                 root.setFlashEnable(args.getBoolean(0));
+            case COMMAND_CAPTURE_IMAGE_ID:
+                root.captureCurrentViewAsBase64(args.getInt(0));
                 break;
         }
     }
