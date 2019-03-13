@@ -11,6 +11,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.Base64;
