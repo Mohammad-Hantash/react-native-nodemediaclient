@@ -54,7 +54,6 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
     public RCTNodeCameraView(@NonNull ThemedReactContext context) {
         super(context);
         context.addLifecycleEventListener(this);
-
         mNodePublisher = new NodePublisher(context, RCTNodeMediaClient.getPremium());
         mNodePublisher.setNodePublisherDelegate(new NodePublisherDelegate() {
             @Override
@@ -86,6 +85,16 @@ public class RCTNodeCameraView extends NodeCameraView implements LifecycleEventL
     }
 
     public void setAudio(int audioBitrate, int audioProfile,int audioSamplerate) {
+        if(audioSamplerate == 0 ){
+            //if zero get device default sample rate
+            AudioManager audioManager = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager != null){
+                String rate = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
+                if(rate != null){
+                    audioSamplerate = Integer.parseInt(rate);
+                }
+            }
+        }
         mNodePublisher.setAudioParam(audioBitrate, audioProfile, audioSamplerate);
     }
 
