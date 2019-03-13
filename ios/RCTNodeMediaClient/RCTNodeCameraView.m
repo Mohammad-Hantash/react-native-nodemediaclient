@@ -10,6 +10,7 @@
 #import "RCTNodeCameraView.h"
 #import <NodeMediaClient/NodeMediaClient.h>
 #import <React/RCTUIManager.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface RCTNodeCameraView()
 
@@ -57,6 +58,19 @@
   int audioBitrate = [[audio objectForKey:@"bitrate"] intValue];
   int audioProfile = [[audio objectForKey:@"profile"] intValue];
   int audioSamplerate = [[audio objectForKey:@"samplerate"] intValue];
+   
+  if (audioSamplerate == 0){
+      AVAudioSession* session = [AVAudioSession sharedInstance];
+      BOOL success;
+      NSError* error = nil;
+      double preferredSampleRate = 48000;
+      success  = [session setPreferredSampleRate:preferredSampleRate error:&error];
+      if (success) {
+          audioSamplerate = preferredSampleRate;
+      } else {
+          NSLog (@"error setting sample rate %@", error);
+      }
+  }
   [_np setAudioParamBitrate:audioBitrate profile:audioProfile sampleRate:audioSamplerate];
 }
 
