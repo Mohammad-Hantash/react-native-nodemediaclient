@@ -100,7 +100,7 @@ NodeCameraView.propTypes = {
   audio: PropTypes.shape({
     bitrate: PropTypes.number,
     profile: PropTypes.oneOf([0, 1, 2]),
-    samplerate: PropTypes.oneOf([8000, 16000, 32000, 44100, 48000]),
+    samplerate: PropTypes.oneOf([0,8000, 16000, 32000, 44100, 48000]),
   }),
   video: PropTypes.shape({
     preset: PropTypes.number,
