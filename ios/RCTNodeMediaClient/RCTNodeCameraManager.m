@@ -11,14 +11,15 @@
 #import "RCTNodeCameraView.h"
 
 @interface RCTNodeCameraManager : RCTViewManager
-
+@property dispatch_queue_t   captureQueue;
 @end
 
 @implementation RCTNodeCameraManager
 RCT_EXPORT_MODULE()
 
 - (UIView *)view {
-  return [[RCTNodeCameraView alloc] init];
+    self.captureQueue  = dispatch_get_main_queue();
+    return [[RCTNodeCameraView alloc] initWithBridge:self.bridge];
 }
 
 RCT_EXPORT_VIEW_PROPERTY(outputUrl, NSString)
@@ -98,8 +99,11 @@ RCT_EXPORT_METHOD(captureCurrentFrame:(nonnull NSNumber *)reactTag quality:(int)
     
     [self.bridge.uiManager addUIBlock:
      ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTNodeCameraView *> *viewRegistry){
-         RCTNodeCameraView *view = viewRegistry[reactTag];
-         [view captureCurrentFrame:self.bridge withQuality:quality];
+         dispatch_async(self.captureQueue, ^{
+             //stuffs to do in background thread
+             RCTNodeCameraView *view = viewRegistry[reactTag];
+             [view captureCurrentFrame:quality];
+         });
      }];
 }
 

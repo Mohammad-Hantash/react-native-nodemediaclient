@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <NodeMediaClient/NodeMediaClient.h>
 
-@interface RCTNodeCameraView : UIView
+@interface RCTNodeCameraView : UIView<NodePublisherDelegate>
 @property (strong, nonatomic) NSString *outputUrl;
 @property (nonatomic) BOOL autopreview;
 @property (strong,nonatomic) NSDictionary *camera;
@@ -18,12 +19,12 @@
 @property (nonatomic) NSInteger smoothSkinLevel;
 
 @property (nonatomic) BOOL flashEnable;
-
+-(id) initWithBridge:(RCTBridge * ) bridge;
 -(int)startprev;
 -(int)stopprev;
 -(int)start;
 -(int)stop;
 -(int)switchCamera;
--(void)captureCurrentFrame:(RCTBridge * ) bridge withQuality:(float)quality;
-
+-(void)captureCurrentFrame:(float)quality;
+@property RCTBridge *  bridge;
 @end

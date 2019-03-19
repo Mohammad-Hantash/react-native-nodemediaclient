@@ -8,7 +8,6 @@
 
 #import "RCTNodeMediaClient.h"
 #import "RCTNodeCameraView.h"
-#import <NodeMediaClient/NodeMediaClient.h>
 #import <React/RCTUIManager.h>
 #import <AVFoundation/AVFoundation.h>
 
@@ -20,17 +19,25 @@
 
 @implementation RCTNodeCameraView
 
-- (id)init {
-  self = [super init];
-  if(self) {
-    _np = [[NodePublisher alloc] initWithPremium:[RCTNodeMediaClient premium]];
-    _autopreview = NO;
-    _outputUrl = nil;
-    _camera = nil;
-    _audio = nil;
-    _video = nil;
-  }
-  return self;
+-(id)initWithBridge:(RCTBridge *)bridge{
+    self = [super init];
+    if(self) {
+        _np = [[NodePublisher alloc] initWithPremium:[RCTNodeMediaClient premium]];
+        [_np setNodePublisherDelegate:self];
+        _autopreview = NO;
+        _outputUrl = nil;
+        _camera = nil;
+        _audio = nil;
+        _video = nil;
+    }
+    [self setBridge:bridge];
+    return self;
+}
+
+-(void)onEventCallback:(id)sender event:(int)event msg:(NSString *)msg{
+    NSDictionary *data = @{@"code": [NSNumber numberWithInt:event],  @"message": msg,
+                           @"target": self.reactTag};
+    [self.bridge.eventDispatcher sendInputEventWithName:@"topChange" body:data];
 }
 
 -(void)setOutputUrl:(NSString *)outputUrl {
@@ -101,11 +108,13 @@
   [_np setFlashEnable:flashEnable];
 }
 
-- (void)captureCurrentFrame:(RCTBridge *)bridge withQuality:(float)quality{
-    [
-     _np capturePicture:^(UIImage * _Nullable image) {
-         NSString * base64 = [UIImageJPEGRepresentation(image,quality) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-         [bridge.eventDispatcher sendDeviceEventWithName:@"currentFrameUpdate" body:@{@"base64": base64}];
+-(void)captureCurrentFrame:(float)quality{
+    [_np capturePicture:^(UIImage * _Nullable image) {
+        if(image){
+            NSString * base64 = [UIImageJPEGRepresentation(image,quality) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+            [self.bridge.eventDispatcher sendDeviceEventWithName:@"currentFrameUpdate" body:@{@"base64": base64}];
+        }
+        
      }
      ];
 }
@@ -118,7 +127,14 @@
 }
 
 -(int)start {
-  return [_np start];
+    int res = 0;
+    @try{
+      res =[_np start];
+    }
+    @catch(NSException * ex){
+        NSLog(@"%@",ex.reason);
+    }
+    return res;
 }
 
 -(int)stop {
