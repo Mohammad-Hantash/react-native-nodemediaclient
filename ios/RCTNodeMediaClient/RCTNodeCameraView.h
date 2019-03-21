@@ -24,6 +24,7 @@
 -(int)stopprev;
 -(int)start;
 -(int)stop;
+@property bool isStarted;
 -(int)switchCamera;
 -(void)captureCurrentFrame:(float)quality;
 @property RCTBridge *  bridge;
