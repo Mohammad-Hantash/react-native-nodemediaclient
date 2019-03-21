@@ -30,6 +30,9 @@
         _audio = nil;
         _video = nil;
     }
+    [_np setAutoFocus:false];
+    [_np setHwEnable:true];
+   
     [self setBridge:bridge];
     return self;
 }
@@ -126,10 +129,16 @@
   return [_np stopPreview];
 }
 
--(int)start {
+-(int)start { 
+    if(self.isStarted){
+        return 0;
+    }
+    
+    
     int res = 0;
     @try{
       res =[_np start];
+      self.isStarted = true;
     }
     @catch(NSException * ex){
         NSLog(@"%@",ex.reason);
@@ -138,6 +147,7 @@
 }
 
 -(int)stop {
+    self.isStarted = false;
   return [_np stop];
 }
 
