@@ -112,14 +112,19 @@
 }
 
 -(void)captureCurrentFrame:(float)quality{
-    [_np capturePicture:^(UIImage * _Nullable image) {
+      @try{
+      [_np capturePicture:^(UIImage * _Nullable image) {
         if(image){
             NSString * base64 = [UIImageJPEGRepresentation(image,quality) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
             [self.bridge.eventDispatcher sendDeviceEventWithName:@"currentFrameUpdate" body:@{@"base64": base64}];
         }
-        
      }
      ];
+    }
+    @catch(NSException * ex){
+    
+    }
+    
 }
 -(int)startprev {
   return [_np startPreview];
